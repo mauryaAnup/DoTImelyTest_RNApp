@@ -23,17 +23,10 @@ A React Native application to manage up to 5 timers simultaneously. The app noti
 
 ## **Screenshots**
 
-### Splash Screen  
-[![Splash Screen](assets/screenshots/Splash.jpg)]
-
-### Home Screen  
-[![Home Screen](assets/screenshots/Home.jpg)]
-
-### Timer Creation  
-![Timer Creation](assets/screenshots/CreateTimer.jpg)
-
-### Active Timer  
-![Timer Creation](assets/screenshots/TimerUi.jpg)
-
-### Timer Completion Alert 
-![Timer Creation](assets/screenshots/CompletionNotification.jpg)
+<p float="left">
+  <img src="assets/screenshots/Splash.jpg" alt="Splash Screen" width="320" height="650">&nbsp
+  <img src="assets/screenshots/Home.jpg" alt="Home Screen" width="320" height="650">&nbsp 
+  <img src="assets/screenshots/CreateTimer.jpg" alt="Create Timer Modal" width="320" height="650">&nbsp
+  <img src="assets/screenshots/TimerUi.jpg" alt="Timer UI" width="320" height="650">&nbsp
+  <img src="assets/screenshots/CompletionNotification.jpg" alt="Completion Notification" width="320" height="650"> 
+</p>
