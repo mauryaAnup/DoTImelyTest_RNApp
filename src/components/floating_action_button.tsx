@@ -1,6 +1,7 @@
 import React, { FC } from "react";
-import { GestureResponderEvent, Text, ToastAndroid, TouchableOpacity } from "react-native";
+import { GestureResponderEvent, Text, TouchableOpacity } from "react-native";
 import { AppColor } from "../utils/constants/colors";
+import { showAlert } from "../utils/helper";
 
 type FloatingButtonProps = {
     text?: string,
@@ -12,15 +13,15 @@ const FloatingButton: FC<FloatingButtonProps> = (props) => {
     const { text, disabled, onPress } = props;
 
     const showToast = () => {
-        ToastAndroid.show("You can only have 5 timers at a time!", ToastAndroid.LONG);
+        showAlert("Limit Alert", "You can only have 5 timers at a time!");
     }
 
     return (
         <TouchableOpacity
             style={{
                 position: "absolute",
-                bottom: '5%',
-                right: '5%',
+                bottom: '6%',
+                right: '7%',
                 height: 55,
                 width: 55,
                 borderRadius: 15,

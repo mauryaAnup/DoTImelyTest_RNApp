@@ -1,10 +1,11 @@
 import React, { FC, useEffect, useRef, useState } from "react";
-import { Alert, FlatList, Image, Platform, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Image, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
 import FloationButton from "../components/floating_action_button";
 import { AppColor } from "../utils/constants/colors";
 import { AppImages } from "../utils/constants/images";
 import TimerModal, { TimerListProps } from "../components/create_timer_modal";
-import notifee, { AndroidBadgeIconType, AndroidImportance } from '@notifee/react-native';
+import { handleTimerCount } from "../utils/helper";
+import { checkNotificationPermission, createNotificationChannel, displayNotification } from "../services/notification";
 
 const HomeScreen: FC = () => {
 
@@ -22,46 +23,9 @@ const HomeScreen: FC = () => {
     }, [timerList]);
 
     useEffect(() => {
-
-        const requestNotificationPermission = async () => {
-            if (Platform.OS === 'android' && Platform.Version >= 33) {
-                const permissionStatus = await notifee.requestPermission();
-                if (permissionStatus.authorizationStatus >= 1) {
-                    console.log('Notification permission granted.');
-                } else {
-                    console.log('Notification permission denied.');
-                }
-            }
-        };
-
-        const createNotificationChannel = async () => {
-            await notifee.createChannel({
-                id: 'timer-channel',
-                name: 'Timer Notifications',
-                importance: AndroidImportance.HIGH,
-            });
-        };
-
-        requestNotificationPermission();
+        checkNotificationPermission();
         createNotificationChannel();
     }, []);
-
-    const displayNotification = async (title: string) => {
-        await notifee.requestPermission();
-
-        await notifee.displayNotification({
-            title: 'Timer Finished!',
-            body: `${title} has completed.`,
-            android: {
-                channelId: 'timer-channel',
-                importance: AndroidImportance.HIGH,
-                smallIcon: 'ic_launcher',
-                largeIcon: 'ic_launcher',
-                circularLargeIcon: true,
-                color: AppColor.header,
-            },
-        });
-    };
 
     const startTimer = () => {
         if (!timeoutRef.current) {
@@ -79,15 +43,7 @@ const HomeScreen: FC = () => {
     const updateTimer = () => {
         setTimeList((prevData) => {
             const updatedData = prevData.map((timer) => {
-                if (timer.totalSec > 0 && !timer.paused) {
-                    const newTotalSec = timer.totalSec - 1;
-                    const hours = Math.floor(newTotalSec / 3600);
-                    const minutes = Math.floor((newTotalSec % 3600) / 60);
-                    const seconds = newTotalSec % 60;
-
-                    return { ...timer, hours, min: minutes, sec: seconds, totalSec: newTotalSec };
-                }
-                return timer;
+                return (timer.totalSec > 0 && !timer.paused) ? handleTimerCount(timer) : timer;
             }).filter(timer => {
                 timer.totalSec < 1 ? displayNotification(timer.title) : null
                 return timer.totalSec > 0;

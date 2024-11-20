@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavigationKey } from '../utils/constants/strings';
 import SplashScreen from '../screens/splash_screen';
 import HomeScreen from '../screens/home_screen';
@@ -10,39 +10,45 @@ import { StatusBar } from 'react-native';
 const Stack = createNativeStackNavigator();
 
 const NavigationRouter = () => {
-    const routeRef: any = useRef();
     const navigationRef: any = React.createRef();
+    const [currentScreenName, setCurrentScreen] = useState<string | undefined>("");
+
+    useEffect(() => {
+        const updateStatusBar = () => {
+            const barStyle = currentScreenName === NavigationKey.home ? 'light-content' : 'dark-content';
+            StatusBar.setBarStyle(barStyle, true);
+        };
+
+        if (navigationRef.current) updateStatusBar();
+    }, [currentScreenName])
 
     return (
         <NavigationContainer
             ref={navigationRef}
             onReady={() => {
-                routeRef.current = navigationRef.current.getCurrentRoute().name;
+                setCurrentScreen(navigationRef.current.getCurrentRoute().name);
             }}
             onStateChange={async () => {
                 const currentRouteName = navigationRef.current.getCurrentRoute().name;
-                routeRef.current = currentRouteName;
+                setCurrentScreen(currentRouteName);
             }}
         >
             <StatusBar
                 translucent
                 backgroundColor={'transparent'}
-                barStyle={routeRef.current === NavigationKey.home ? 'light-content' : 'dark-content'}
             />
 
             <Stack.Navigator
                 initialRouteName={NavigationKey.splash}
                 screenOptions={() => ({
                     animation: "ios_from_right",
-                    orientation: "portrait"
+                    orientation: "portrait",
+                    headerShown: false
                 })}
             >
                 <Stack.Screen
                     name={NavigationKey.splash}
                     component={SplashScreen}
-                    options={{
-                        headerShown: false
-                    }}
                 />
                 <Stack.Screen
                     name={NavigationKey.home}

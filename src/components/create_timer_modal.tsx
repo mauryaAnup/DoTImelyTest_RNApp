@@ -1,8 +1,8 @@
 import React, { FC, useState } from "react";
-import { Modal, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
+import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AppColor } from "../utils/constants/colors";
 import DropDown from "./common_dropdown";
-import { generateNumber, generateUUID } from "../utils/helper";
+import { generateNumber, generateUUID, showAlert } from "../utils/helper";
 
 export type TimerListProps = {
     id: string,
@@ -29,19 +29,19 @@ const TimerModal: FC<TimerModalProps> = (props) => {
 
     const [timerTitle, setTimerTitle] = useState<string | null>(null);
     const [selectedHours, setHours] = useState<string | null>(null);
-    const [selectedMin, setMin] = useState<string>('00');
+    const [selectedMin, setMin] = useState<string | null>(null);
     const [selectedSec, setSec] = useState<string>('30');
 
     const onTimerCreate = () => {
         if ((selectedHours === '00' || selectedHours === null) && selectedMin === '00' && selectedSec === '00') {
-            ToastAndroid.show('Please select valid time!', ToastAndroid.LONG);
+            showAlert("Alert", "Please select valid time!");
         } else {
-            const totalSec = (parseInt(selectedHours ?? '00') * 3600) + (parseInt(selectedMin) * 60) + parseInt(selectedSec);
+            const totalSec = (parseInt(selectedHours ?? '00') * 3600) + (parseInt(selectedMin ?? '00') * 60) + parseInt(selectedSec);
             const data = {
                 id: generateUUID(32),
                 title: timerTitle ?? `Timer ${timerList.length + 1}`,
                 hours: parseInt(selectedHours ?? '00'),
-                min: parseInt(selectedMin),
+                min: parseInt(selectedMin ?? '00'),
                 sec: parseInt(selectedSec),
                 totalSec,
                 initialTotalSec: totalSec,
@@ -58,7 +58,7 @@ const TimerModal: FC<TimerModalProps> = (props) => {
     const clearAllData = () => {
         setTimerTitle(null);
         setHours(null);
-        setMin('00');
+        setMin(null);
         setSec('30');
         closeModal();
     }
